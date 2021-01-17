@@ -1,0 +1,3 @@
+type MenuItemProps = {
+  section: Section;
+};

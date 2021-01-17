@@ -3,7 +3,7 @@ import './index.scss';
 import { StrictMode } from 'react';
 import { render } from 'react-dom';
 
-import { App } from './app';
+import { App } from './components/app/app';
 import reportWebVitals from './reportWebVitals';
 
 render(
