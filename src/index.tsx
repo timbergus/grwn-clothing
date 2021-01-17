@@ -4,11 +4,16 @@ import { StrictMode } from 'react';
 import { render } from 'react-dom';
 
 import { App } from './components/app/app';
+
+import AppRouter from './app-router';
+
 import reportWebVitals from './reportWebVitals';
 
 render(
   <StrictMode>
-    <App />
+    <AppRouter>
+      <App />
+    </AppRouter>
   </StrictMode>,
   document.getElementById('root'),
 );
