@@ -3,7 +3,7 @@ import './app.scss';
 import { useEffect, useState } from 'react';
 import { Route } from 'react-router-dom';
 
-import { auth } from '../../firebase/firebase.utils';
+import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
 
 import Home from '../../pages/home/home';
 import Shop from '../../pages/shop/shop';
@@ -15,9 +15,18 @@ export const App = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
-    return auth.onAuthStateChanged(user => {
-      console.log(user);
-      setCurrentUser(user);
+    return auth.onAuthStateChanged(async userAuth => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth, {});
+        userRef?.onSnapshot(snapShot => {
+          setCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data(),
+          });
+        });
+      } else {
+        setCurrentUser(null);
+      }
     });
   }, []);
 

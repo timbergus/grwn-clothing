@@ -1,30 +1,38 @@
 import './sign-in.scss';
 
-import { FormEvent, useState } from 'react';
+import { FC, FormEvent, useState } from 'react';
+
+import { auth, signInWithGoogle } from '../../firebase/firebase.utils';
 
 import FormInput from '../form-input/form-input';
 import CustomButton from '../custom-button/custom-button';
 
-import { signInWithGoogle } from '../../firebase/firebase.utils';
-
-const SignIn = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+const SignIn: FC = () => {
+  const [formData, setFormData] = useState<SignInProps>({
+    email: '',
+    password: '',
+  });
 
   const handleChange = (event: FormEvent<HTMLInputElement>) => {
     const { name, value } = event.currentTarget;
     setFormData(data => ({ ...data, [name]: value }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setFormData({ email: '', password: '' });
+    try {
+      await auth.signInWithEmailAndPassword(formData.email, formData.password);
+      setFormData({ email: '', password: '' });
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
     <div className="sign-in">
       <div className="title">I already have an account</div>
       <div>Sign in with your email and password</div>
-      <form noValidate>
+      <form className="sign-in-form" onSubmit={handleSubmit}>
         <FormInput
           id="sign-in-email"
           name="email"
@@ -44,7 +52,7 @@ const SignIn = () => {
           label="Password"
         />
         <div className="button">
-          <CustomButton onClick={handleSubmit}>Sign In</CustomButton>
+          <CustomButton type="submit">Sign In</CustomButton>
           <CustomButton onClick={signInWithGoogle} isGoogleSignIn>
             Sign In With Google
           </CustomButton>
